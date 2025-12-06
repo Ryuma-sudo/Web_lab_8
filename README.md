@@ -43,9 +43,6 @@ See `screenshots/` folder for test results.
 - Pagination
 - Sorting
 
-## Time Spent
-Approximately [X] hours
-
 ## Project Structure
 ```
 customer-api
