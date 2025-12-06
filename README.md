@@ -18,8 +18,8 @@
 - [x] DELETE /api/customers/{id} - Delete customer
 - [x] GET /api/customers/search?keyword={keyword} - Search
 - [x] GET /api/customers/status/{status} - Filter by status
-- [x] Pagination and sorting
-- [x] PATCH for partial update
+- [ ] Pagination and sorting
+- [ ] PATCH for partial update
 - [ ] Bonus features
 
 ## How to Run
