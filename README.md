@@ -308,3 +308,45 @@ The following screenshots demonstrate the successful validation of the core REST
 
 -----
 
+### 5. Code Flow & Architectural Analysis
+
+This section analyzes the data propagation and control flow within the application, demonstrating the implementation of the **Layered Architecture** pattern.
+
+#### 5.1. Architectural Overview
+The application enforces a strict separation of concerns through three distinct layers:
+1.  **Presentation Layer (`Controller`):** Manages HTTP request/response cycles and DTO validation.
+2.  **Business Layer (`Service`):** Encapsulates core business logic, transaction management, and Entity-DTO transformation.
+3.  **Data Access Layer (`Repository`):** Handles persistence and database abstraction via Spring Data JPA.
+
+#### 5.2. Request Processing Flow: "Create Customer"
+The lifecycle of a `POST /api/customers` request illustrates the interaction between these components:
+
+1.  **Request Reception & Validation (Controller Layer)**
+    * The `CustomerRestController` intercepts the incoming JSON payload mapped to `CustomerRequestDTO`.
+    * **Validation:** The `@Valid` annotation triggers constraints defined in the DTO (e.g., `@Pattern` for phone numbers, `@NotBlank` for required fields).
+    * *Exit Logic:* If validation fails, a `MethodArgumentNotValidException` is thrown immediately, bypassing the service layer.
+
+2.  **Business Logic Execution (Service Layer)**
+    * The controller delegates the valid DTO to `CustomerServiceImpl.createCustomer()`.
+    * **Invariants Check:** The service performs existence checks using `customerRepository.existsByCustomerCode()` and `existsByEmail()`. If a conflict is detected, a `DuplicateResourceException` is raised.
+    * **Transformation:** The DTO is converted into a managed `Customer` entity using the `convertToEntity()` helper method to prepare for persistence.
+
+3.  **Persistence & Lifecycle Management (Repository Layer)**
+    * The service invokes `customerRepository.save()`. This triggers the underlying Hibernate implementation to generate a SQL `INSERT` statement.
+    * **Lifecycle Hooks:** Prior to database insertion, the `@PrePersist` annotated method in the `Customer` entity automatically hydrates the `createdAt` and `updatedAt` timestamps and sets the default status to `ACTIVE`.
+
+4.  **Response Construction**
+    * The persisted entity (now enriched with a database-generated Primary Key) is returned to the service.
+    * It is transformed into a `CustomerResponseDTO` to sanitize the output (hiding internal persistence details).
+    * The Controller wraps this DTO in a `ResponseEntity` with an HTTP `201 Created` status code.
+
+#### 5.3. Exception Handling Strategy
+Error handling is decoupled from business logic using AOP (Aspect-Oriented Programming) via the `@RestControllerAdvice` pattern:
+
+* **Propagation:** Exceptions thrown at any layer (e.g., `ResourceNotFoundException` in Service or Validation errors in Controller) bubble up the stack.
+* **Interception:** The `GlobalExceptionHandler` captures these specific exceptions.
+* **Normalization:** The handler constructs a standardized `ErrorResponseDTO` containing the timestamp, HTTP status, and specific error message, ensuring the API client always receives a consistent error structure.
+
+
+-----
+
