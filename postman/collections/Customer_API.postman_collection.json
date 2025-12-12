@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "e674e583-2925-4679-9faa-1d3e2552b871",
+    "name": "Customer_API",
+    "description": "````markdown\n# Customer API Documentation\n\n## Base URL\n`http://localhost:8080/api/customers`\n\n## Endpoints\n\n### 1. Get All Customers (Pagination & Sorting)\nRetrieve a list of customers with optional pagination and sorting.\n\n**GET** `/api/customers`\n\n**Parameters:**\n- `page` (optional): Page number (default: 0)\n- `size` (optional): Items per page (default: 10)\n- `sortBy` (optional): Field to sort by (default: \"id\")\n- `sortDir` (optional): Sort direction (\"asc\" or \"desc\", default: \"asc\")\n\n**Response:** 200 OK\n```json\n{\n    \"content\": [\n        {\n            \"id\": 1,\n            \"customerCode\": \"C001\",\n            \"fullName\": \"John Doe\",\n            \"email\": \"john.doe@example.com\",\n            \"phone\": \"+1-555-0101\",\n            \"address\": \"123 Main St, New York\",\n            \"status\": \"ACTIVE\",\n            \"createdAt\": \"2024-12-12T10:00:00\"\n        }\n    ],\n    \"pageable\": {\n        \"pageNumber\": 0,\n        \"pageSize\": 10,\n        ...\n    },\n    \"totalPages\": 1,\n    \"totalElements\": 1,\n    \"last\": true\n}\n````\n\n### 2\\. Get Customer by ID\n\nRetrieve details of a specific customer.\n\n**GET** `/api/customers/{id}`\n\n**Response:** 200 OK\n\n```json\n{\n    \"id\": 1,\n    \"customerCode\": \"C001\",\n    \"fullName\": \"John Doe\",\n    \"email\": \"john.doe@example.com\",\n    \"phone\": \"+1-555-0101\",\n    \"address\": \"123 Main St, New York\",\n    \"status\": \"ACTIVE\",\n    \"createdAt\": \"2024-12-12T10:00:00\"\n}\n```\n\n### 3\\. Create Customer\n\nCreate a new customer. Validates input data.\n\n**POST** `/api/customers`\n\n**Body:**\n\n```json\n{\n    \"customerCode\": \"C002\",\n    \"fullName\": \"Jane Smith\",\n    \"email\": \"jane.smith@example.com\",\n    \"phone\": \"+1-555-0102\",\n    \"address\": \"456 Oak Ave\",\n    \"status\": \"ACTIVE\"\n}\n```\n\n**Response:** 201 Created\n\n```json\n{\n    \"id\": 2,\n    \"customerCode\": \"C002\",\n    \"fullName\": \"Jane Smith\",\n    ...\n    \"createdAt\": \"2024-12-12T10:05:00\"\n}\n```\n\n### 4\\. Update Customer (Full)\n\nUpdate all details of an existing customer.\n\n**PUT** `/api/customers/{id}`\n\n**Body:**\n\n```json\n{\n    \"customerCode\": \"C001\",\n    \"fullName\": \"John Updated\",\n    \"email\": \"john.updated@example.com\",\n    \"phone\": \"+1-555-9999\",\n    \"address\": \"New Address\",\n    \"status\": \"ACTIVE\"\n}\n```\n\n**Response:** 200 OK\n\n```json\n{\n    \"id\": 1,\n    \"fullName\": \"John Updated\",\n    ...\n}\n```\n\n### 5\\. Partial Update (PATCH)\n\nUpdate specific fields of a customer without sending the entire object.\n\n**PATCH** `/api/customers/{id}`\n\n**Body:** (Only fields to update)\n\n```json\n{\n    \"address\": \"Updated Address City\",\n    \"phone\": \"+1-000-000-0000\"\n}\n```\n\n**Response:** 200 OK\n\n```json\n{\n    \"id\": 1,\n    \"address\": \"Updated Address City\",\n    \"phone\": \"+1-000-000-0000\",\n    ...\n}\n```\n\n### 6\\. Delete Customer\n\nRemove a customer from the system.\n\n**DELETE** `/api/customers/{id}`\n\n**Response:** 200 OK\n\n```json\n{\n    \"message\": \"Customer deleted successfully\"\n}\n```\n\n### 7\\. Search Customers\n\nSearch for customers by keyword (matches Name, Email, or Customer Code).\n\n**GET** `/api/customers/search?keyword={keyword}`\n\n**Response:** 200 OK\n\n```json\n[\n    {\n        \"id\": 1,\n        \"fullName\": \"John Doe\",\n        ...\n    }\n]\n```\n\n### 8\\. Filter by Status\n\nFilter customers by their status (ACTIVE / INACTIVE).\n\n**GET** `/api/customers/status/{status}`\n\n**Example:** `/api/customers/status/ACTIVE`\n\n**Response:** 200 OK\n\n```json\n[\n    {\n        \"id\": 1,\n        \"status\": \"ACTIVE\",\n        ...\n    },\n    ...\n]\n```\n\n-----\n\n## Error Responses\n\n### 404 Not Found\n\nReturned when a resource (e.g., ID) is not found.\n\n```json\n{\n    \"timestamp\": \"2024-12-12T10:00:00\",\n    \"status\": 404,\n    \"error\": \"Not Found\",\n    \"message\": \"Customer not found with id: 99\",\n    \"path\": \"/api/customers/99\"\n}\n```\n\n### 409 Conflict\n\nReturned when violating unique constraints (Duplicate Email or Customer Code).\n\n```json\n{\n    \"timestamp\": \"2024-12-12T10:00:00\",\n    \"status\": 409,\n    \"error\": \"Conflict\",\n    \"message\": \"Email already exists: john.doe@example.com\",\n    \"path\": \"/api/customers\"\n}\n```\n\n### 400 Bad Request\n\nReturned when validation fails (e.g., invalid email format, blank fields).\n\n```json\n{\n    \"timestamp\": \"2024-12-12T10:00:00\",\n    \"status\": 400,\n    \"error\": \"Validation Failed\",\n    \"message\": \"Invalid input data\",\n    \"details\": [\n        \"email: Invalid email format\",\n        \"fullName: Full name is required\"\n    ],\n    \"path\": \"/api/customers\"\n}\n```\n\n```\n```",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "all customers",
+      "id": "cc95fdc1-b859-4db2-807e-fd84147c8074",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers"
+          ]
+        },
+        "description": "**Expected Response:** 200 OK\n\n``` json\n{\n    \"content\": [\n        {\n            \"id\": 1,\n            \"customerCode\": \"C001\",\n            \"fullName\": \"John Doe\",\n            \"email\": \"john.doe@example.com\",\n            \"phone\": \"+1-555-0101\",\n            \"address\": \"123 Main St, New York\",\n            \"status\": \"ACTIVE\",\n            \"createdAt\": \"2024-12-12T10:00:00\"\n        }\n    ],\n    \"pageable\": {\n        \"pageNumber\": 0,\n        \"pageSize\": 10,\n        ...\n    },\n    \"totalPages\": 1,\n    \"totalElements\": 1,\n    \"last\": true\n}\n\n ```"
+      },
+      "response": []
+    },
+    {
+      "name": "customer by ID",
+      "id": "64d01ce1-28af-4d1e-a077-47abe2d2418c",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "1"
+          ]
+        },
+        "description": "**Expected Response** (200 OK):\n```json\n{\n    \"id\": 1,\n    \"customerCode\": \"C001\",\n    \"fullName\": \"John Doe\",\n    ...\n}\n```"
+      },
+      "response": []
+    },
+    {
+      "name": "create customer",
+      "id": "dbc97f6c-1447-4250-996f-bc5e7c7bc796",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"customerCode\": \"C006\",\r\n    \"fullName\": \"David Miller\",\r\n    \"email\": \"david.miller@example.com\",\r\n    \"phone\": \"+15550106000\",\r\n    \"address\": \"999 Broadway, Seattle, WA 98101\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/customers",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers"
+          ]
+        },
+        "description": "**Expected Response** (201 Created):\n```json\n{\n    \"id\": 6,\n    \"customerCode\": \"C006\",\n    \"fullName\": \"David Miller\",\n    ...\n}\n```"
+      },
+      "response": []
+    },
+    {
+      "name": "update customer",
+      "id": "915bfdcb-bd07-40f9-8e07-dd7ce65c766b",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"customerCode\": \"C006\",\r\n    \"fullName\": \"David Miller Jr.\",\r\n    \"email\": \"david.miller.jr@example.com\",\r\n    \"phone\": \"+15550107000\",\r\n    \"address\": \"1000 Broadway, Seattle, WA 98101\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/customers/6",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "6"
+          ]
+        },
+        "description": "**Expected Response** (200 OK):\n\n``` json\n{\n    \"id\": 6,\n    \"customerCode\": \"C006\",\n    \"fullName\": \"David Miller Jr.\",\n    ...\n}\n\n ```"
+      },
+      "response": []
+    },
+    {
+      "name": "partial update",
+      "id": "870d2122-da57-4f35-bebd-f91d95382373",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"fullName\": \"David John Miller Jr.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/customers/6",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "6"
+          ]
+        },
+        "description": "**Expected Response** (200 OK):\n\n``` json\n{\n    \"id\": 6,\n    \"customerCode\": \"C006\",\n    \"fullName\": \"David John Miller Jr.\",\n    \"email\": \"david.miller.jr@example.com\",\n    \"phone\": \"+15550107000\",\n    \"address\": \"1000 Broadway, Seattle, WA 98101\",\n    \"status\": \"ACTIVE\",\n    \"createdAt\": \"2025-12-12T22:10:41\"\n}\n\n ```"
+      },
+      "response": []
+    },
+    {
+      "name": "customer",
+      "id": "2019b956-3637-4781-bf3b-d678ebaa7af8",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers/6",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "6"
+          ]
+        },
+        "description": "**Expected Response** (200 OK):\n\n``` json\n{\n    \"message\": \"Customer deleted successfully\"\n}\n\n ```"
+      },
+      "response": []
+    },
+    {
+      "name": "Search customers",
+      "id": "0e311bcf-f18a-4078-8904-5125332c1a19",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers/search?keyword=john",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "search"
+          ],
+          "query": [
+            {
+              "key": "keyword",
+              "value": "john"
+            }
+          ]
+        },
+        "description": "**Expected Response** (200 OK):\n```json\n[\n    {\n        \"id\": 1,\n        \"customerCode\": \"C001\",\n        \"fullName\": \"John Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"phone\": \"+1-555-0101\",\n        \"address\": \"123 Main St, New York, NY 10001\",\n        \"status\": \"ACTIVE\",\n        \"createdAt\": \"2025-12-06T16:06:06\"\n    },\n    {\n        \"id\": 3,\n        \"customerCode\": \"C003\",\n        \"fullName\": \"Bob Johnson\",\n        \"email\": \"bob.johnson@example.com\",\n        \"phone\": \"+1-555-0103\",\n        \"address\": \"789 Pine Rd, Chicago, IL 60601\",\n        \"status\": \"ACTIVE\",\n        \"createdAt\": \"2025-12-06T16:06:06\"\n    }\n]\n```"
+      },
+      "response": []
+    },
+    {
+      "name": "Filter by status",
+      "id": "4c97987b-fc40-470c-a2fe-21bf9ede925a",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/customers/status/INACTIVE",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "customers",
+            "status",
+            "INACTIVE"
+          ]
+        },
+        "description": "**Expected Response** (200 OK):\n```json\n[\n    {\n        \"id\": 4,\n        \"customerCode\": \"C004\",\n        \"fullName\": \"Alice Brown\",\n        \"email\": \"alice.brown@example.com\",\n        \"phone\": \"+1-555-0104\",\n        \"address\": \"321 Elm St, Houston, TX 77001\",\n        \"status\": \"INACTIVE\",\n        \"createdAt\": \"2025-12-06T16:06:06\"\n    }\n]\n```"
+      },
+      "response": []
+    }
+  ]
+}
