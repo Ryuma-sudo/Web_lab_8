@@ -18,8 +18,8 @@
 - [x] DELETE /api/customers/{id} - Delete customer
 - [x] GET /api/customers/search?keyword={keyword} - Search
 - [x] GET /api/customers/status/{status} - Filter by status
-- [ ] Pagination and sorting
-- [ ] PATCH for partial update
+- [x] Pagination and sorting
+- [x] PATCH for partial update
 - [ ] Bonus features
 
 ## How to Run
@@ -58,7 +58,8 @@ customer-api
         │               │   └── CustomerRestController.java
         │               ├── dto                 # Data Transfer Objects (Validation & Data Hiding)
         │               │   ├── CustomerRequestDTO.java
-        │               │   ├── CustomerResponseDTO.java
+        │               │   ├── CustomerRequestDTO.java
+        │               │   ├── CustomerUpdateDTO.java
         │               │   └── ErrorResponseDTO.java
         │               ├── entity              # Persistence Layer (JPA Entities)
         │               │   ├── Customer.java
@@ -248,9 +249,9 @@ The following screenshots demonstrate the successful validation of the core REST
 
 **Figure 1: Retrieve All Customers (GET)**
 * **Endpoint:** `GET /api/customers`
-* **Result:** **200 OK**. The response returns a JSON array of `CustomerResponseDTO` objects. This confirms the repository successfully fetches entities and the service layer correctly maps them to DTOs, excluding sensitive internal fields.
+* **Result:** **200 OK**. The response returns a JSON array of `CustomerResponseDTO` objects. This confirms the repository successfully fetches entities and the service layer correctly maps them to DTOs, excluding sensitive internal fields. Also including pagination
 
-<img width="2978" height="1138" alt="image" src="https://github.com/user-attachments/assets/7e853aba-52aa-4e73-99d8-382cba252533" />
+<img width="2225" height="936" alt="image" src="https://github.com/user-attachments/assets/715a1119-8467-45da-8c15-02308af4c029" />
 
 **Figure 2: Retrieve Customer by ID (GET)**
 * **Endpoint:** `GET /api/customers/{id}`
@@ -277,7 +278,7 @@ The following screenshots demonstrate the successful validation of the core REST
 
 <img width="2974" height="302" alt="image" src="https://github.com/user-attachments/assets/7807e3dd-6f5d-40c7-8dab-76362d122029" />
 
-#### 4.2. Search Capabilities
+#### 4.2. Search and filter Capabilities
 
 **Figure 6: Search Customer (GET)**
 
@@ -286,21 +287,28 @@ The following screenshots demonstrate the successful validation of the core REST
 
 <img width="2977" height="896" alt="image" src="https://github.com/user-attachments/assets/593e5d0b-8e13-4622-ab29-149babcb16b6" />
 
+**Figure 7: Filter Status (GET)**
+
+* **Endpoint:** `GET /api/customers/status/INACTIVE`
+* **Result:** **200 OK**. The query returned a list of customers matching the provided status (ACTIVE or INACTIVE). This validates the custom JPQL queries defined in the CustomerRepository.
+
+<img width="2234" height="610" alt="image" src="https://github.com/user-attachments/assets/99f285cc-1d30-484c-9167-71d069b3f835" />
+
 #### 4.3. Exception Handling & Validation
 
-**Figure 7: Input Validation Failure (400)**
+**Figure 8: Input Validation Failure (400)**
 * **Scenario:** Sending a payload with invalid data (e.g., invalid email format or blank name).
 * **Result:** **400 Bad Request**. The `MethodArgumentNotValidException` was caught by the global handler. The response body details specific field errors, confirming that `@Valid` constraints are active.
 
 <img width="2955" height="622" alt="image" src="https://github.com/user-attachments/assets/8ffde19a-7553-4e1a-bfa1-a7654480c479" />
 
-**Figure 8: Resource Not Found (404)**
+**Figure 9: Resource Not Found (404)**
 * **Scenario:** Requesting an ID that does not exist in the database (e.g., `GET /api/customers/999`).
 * **Result:** **404 Not Found**. The `ResourceNotFoundException` was triggered, returning a structured error DTO rather than a generic server trace.
 
 <img width="2984" height="519" alt="image" src="https://github.com/user-attachments/assets/76c16641-eed7-447c-839e-1e9c11f0f692" />
 
-**Figure 9: Duplicate Resource Conflict (409)**
+**Figure 10: Duplicate Resource Conflict (409)**
 * **Scenario:** Attempting to create a customer with an email or code that already exists.
 * **Result:** **409 Conflict**. The service layer detected the unique constraint violation and threw `DuplicateResourceException`.
 
