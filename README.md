@@ -248,10 +248,10 @@ The following screenshots demonstrate the successful validation of the core REST
 #### 4.1. Core CRUD Operations
 
 **Figure 1: Retrieve All Customers (GET)**
-* **Endpoint:** `GET /api/customers`
-* **Result:** **200 OK**. The response returns a JSON array of `CustomerResponseDTO` objects. This confirms the repository successfully fetches entities and the service layer correctly maps them to DTOs, excluding sensitive internal fields. Also including pagination
+* **Endpoint:** `GET api/customers?sortBy=id&sortDir=desc`
+* **Result:** **200 OK**. The response returns a JSON array of `CustomerResponseDTO` objects. This confirms the repository successfully fetches entities and the service layer correctly maps them to DTOs, excluding sensitive internal fields. Also including pagination and sorting
 
-<img width="2225" height="936" alt="image" src="https://github.com/user-attachments/assets/715a1119-8467-45da-8c15-02308af4c029" />
+<img width="2222" height="1075" alt="image" src="https://github.com/user-attachments/assets/c5599786-8b56-4eea-a433-b9de11ac684d" />
 
 **Figure 2: Retrieve Customer by ID (GET)**
 * **Endpoint:** `GET /api/customers/{id}`
